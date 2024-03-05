@@ -17,6 +17,8 @@ is_streaming = True
 
 def generate_frames():
     cap = cv2.VideoCapture(0)
+    cap.set(3, 640)
+    cap.set(4, 480)
 
     # Detector and initialization
     at_detector = apriltag.Detector()
