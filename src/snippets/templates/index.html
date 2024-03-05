@@ -1,0 +1,24 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Simple Video Stream</title>
+</head>
+<body>
+<h1>Simple Video Stream</h1>
+<button id="startStopButton" type="submit">Stop</button>
+<img id='video_feed' src="{{ url_for('video_feed') }}" width="640" height="480">
+<script>
+    var button = document.getElementById('startStopButton');
+        button.onclick = function() {
+            if (button.innerHTML === 'Start') {
+                document.getElementById('video_feed').src = "{{ url_for('video_feed') }}";
+                button.innerHTML = 'Stop';
+            } else {
+                button.innerHTML = 'Start';
+                document.getElementById('video_feed').src = "";
+            }
+        };
+</script>
+</body>
+</html>
