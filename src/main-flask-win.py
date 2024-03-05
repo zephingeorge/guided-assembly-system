@@ -1,7 +1,7 @@
 from flask import Flask, Response, render_template, request
 import cv2, time
 import numpy as np
-from pupil_apriltags import Detector
+import apriltag
 
 app = Flask(__name__)
 
@@ -21,15 +21,7 @@ def generate_frames():
     cap.set(4, 480)
 
     # Detector and initialization
-    at_detector = Detector(
-        families='tag36h11',
-        nthreads=1,
-        quad_decimate=2.0,
-        quad_sigma=0.0,
-        refine_edges=1,
-        decode_sharpening=0.25,
-        debug=0,
-    )
+    at_detector = apriltag.Detector()
 
     screwdriver_center = np.array([0, 0])
     screw_index = 0
@@ -49,7 +41,7 @@ def generate_frames():
         gray_image = cv2.cvtColor(frame, cv2.COLOR_BGR2GRAY)
 
         # 2. Detect AprilTags
-        tags = at_detector.detect(gray_image, estimate_tag_pose=False, camera_params=None, tag_size=None)
+        tags = at_detector.detect(gray_image)
 
         # 3. Analyze screwdriver and screws
         for tag in tags:
