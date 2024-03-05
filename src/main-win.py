@@ -38,13 +38,13 @@ def generate_frames():
             # Pause streaming when the flag is False
             continue
 
-        ret, image = cap.read()
+        ret, frame = cap.read()
         if not ret:
             break
 
         # Process image:
         # 1. Convert to grayscale
-        gray_image = cv2.cvtColor(image, cv2.COLOR_BGR2GRAY)
+        gray_image = cv2.cvtColor(frame, cv2.COLOR_BGR2GRAY)
 
         # 2. Detect AprilTags
         tags = at_detector.detect(gray_image, estimate_tag_pose=False, camera_params=None, tag_size=None)
@@ -66,14 +66,14 @@ def generate_frames():
         nearest_screw = np.argmin(screwdriver_to_screw)
 
         # 4. Display information and circles
-        cv2.putText(image, "Next Screw : " + str(screw_index + 1), (10, 30), cv2.FONT_HERSHEY_SIMPLEX, 0.8,
+        cv2.putText(frame, "Next Screw : " + str(screw_index + 1), (10, 30), cv2.FONT_HERSHEY_SIMPLEX, 0.8,
                     (0, 255, 0), 2, cv2.LINE_AA)
-        image = cv2.circle(image, (screw_coordinates[screw_index][0], screw_coordinates[screw_index][1]), 8,
+        frame = cv2.circle(frame, (screw_coordinates[screw_index][0], screw_coordinates[screw_index][1]), 8,
                            (0, 255, 0), 2)
-        cv2.circle(image, screwdriver_center, 5, (0, 0, 255), 2)
-        cv2.putText(image, "Nearest Screw : " + str(nearest_screw + 1), (10, 60), cv2.FONT_HERSHEY_SIMPLEX, 0.8,
+        cv2.circle(frame, screwdriver_center, 5, (0, 0, 255), 2)
+        cv2.putText(frame, "Nearest Screw : " + str(nearest_screw + 1), (10, 60), cv2.FONT_HERSHEY_SIMPLEX, 0.8,
                     (0, 255, 0), 2, cv2.LINE_AA)
-        image = cv2.circle(image, (screw_coordinates[nearest_screw][0], screw_coordinates[nearest_screw][1]), 5,
+        frame = cv2.circle(frame, (screw_coordinates[nearest_screw][0], screw_coordinates[nearest_screw][1]), 5,
                            (0, 0, 255), 5)
 
         # Draw a circle at the nearest screw
