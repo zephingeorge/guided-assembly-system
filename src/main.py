@@ -122,23 +122,9 @@ def generate_frames():
     cap.release()
 
 
-@app.route('/video')
-def video():
+@app.route('/video_feed')
+def video_feed():
     return Response(generate_frames(), mimetype='multipart/x-mixed-replace; boundary=frame')
-
-
-@app.route('/toggle_streaming', methods=['POST'])
-def toggle_streaming():
-    global is_streaming
-    is_streaming = not is_streaming  # Invert the flag
-    print("Streaming " + ('paused' if not is_streaming else 'resumed'))
-
-    # Update the state of the video stream based on the flag (start/stop)
-    # (call your video handling functions here)
-
-    # Display a success message or reload the page to reflect the change
-    return render_template('index.html', message="Streaming " + ('paused' if not is_streaming else 'resumed'))
-
 
 @app.route('/')
 def index():
