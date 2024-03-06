@@ -10,10 +10,10 @@ at_detector = apriltag.Detector()
 
 # Define screw coordinates
 screw_coordinates = [
-    [270, 235],
-    [420, 320],
-    [420, 235],
-    [270, 320],
+    [270, 228],
+    [345, 250],
+    [340, 220],
+    [270, 250],
 ]
 
 screwdriver_tagid = 3
