@@ -1,5 +1,4 @@
 # write a program to crop screw images from the camera using the given screw coordinates and then use the model at ../neural-network/model.h5 to predict the presence of the screw
-import os
 
 import cv2
 import keras
@@ -75,15 +74,19 @@ def draw_circle(event, x, y, flags, param):
             # Resize cropped frame to 64x64 (adjust interpolation method if needed)
             resized_frame = cv2.resize(cropped_frame, (64, 64), interpolation=cv2.INTER_AREA)
             result = predict_image(resized_frame)
-            print(result)
+            if result:
+                print("------------Screw detected------------")
+            else:
+                print("-----------No screw detected----------")
             # Define desired filename and path (replace with your preference)
             filename = f"cropped_image_{mouseX}_{mouseY}.jpg"
-            filepath = "./screw-extracts/" + filename
+            filepath = "./neural-network/screw-extracts/" + filename
             print(f"Image : {filepath}")
             cv2.imwrite(filepath, resized_frame)
 
 
 # Create a window for displaying the image and set up the mouse callback
+cv2.namedWindow('Desk Image')
 cv2.setMouseCallback('Desk Image', draw_circle)
 
 # Global variable to store the frame (optional for performance)
