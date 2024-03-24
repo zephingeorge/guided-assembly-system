@@ -3,22 +3,106 @@
 <head>
     <meta charset="UTF-8">
     <title>Simple Video Stream</title>
+        <style>
+        /* Add CSS styles here */
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #f0f0f0;
+            margin: 0;
+            padding: 0;
+        }
+
+        h1 {
+            text-align: center;
+            color: #333;
+        }
+
+        button {
+            padding: 10px 20px;
+            font-size: 16px;
+            border: none;
+            background-color: #4CAF50;
+            color: white;
+            cursor: pointer;
+        }
+
+        button:hover {
+            background-color: #45a049;
+        }
+
+        #video_feed {
+            display: block;
+            margin: 0 auto;
+            border: 1px solid #ccc;
+        }
+
+        #startStopButton {
+            display: block;
+            margin: 20px auto;
+        }
+    </style>
 </head>
 <body>
 <h1>Simple Video Stream</h1>
 <button id="startStopButton" type="submit">Stop</button>
-<img id='video_feed' src="{{ url_for('video_feed') }}" width="640" height="480">
+#add toggle button
+
+<img style="" id='video_feed' src="{{ url_for('video_feed') }}" width="640" height="480">
 <script>
+    var video_feed = document.getElementById('video_feed');
     var button = document.getElementById('startStopButton');
-        button.onclick = function() {
-            if (button.innerHTML === 'Start') {
-                document.getElementById('video_feed').src = "{{ url_for('video_feed') }}";
-                button.innerHTML = 'Stop';
-            } else {
-                button.innerHTML = 'Start';
-                document.getElementById('video_feed').src = "";
-            }
-        };
+    button.onclick = function() {
+        if (button.innerHTML === 'Start') {
+            video_feed.src = "{{ url_for('video_feed') }}";
+            button.innerHTML = 'Stop';
+            removeWatermark();
+
+        } else {
+            button.innerHTML = 'Start';
+            video_feed.src = src="{{ url_for('static', filename='images/background.png') }}";
+            addWatermark();
+        }
+    };
+
+
+    function addWatermark() {
+    var watermark = document.createElement('p');
+    watermark.id = 'watermark';
+    watermark.innerHTML = 'Please start the video stream to see the video feed';
+    watermark.style.position = 'absolute';
+    watermark.style.top = '20px'; // Adjust the position of the watermark as needed
+    watermark.style.left = '20px'; // Adjust the position of the watermark as needed
+    watermark.style.opacity = '0.5'; // Adjust the opacity of the watermark as needed
+    watermark.style.pointerEvents = 'none'; // Make sure the watermark doesn't interfere with mouse clicks
+    document.body.appendChild(watermark);
+    }
+
+    function removeWatermark() {
+    var watermark = document.querySelector('#watermark');
+    if (watermark) {
+        watermark.parentNode.removeChild(watermark);
+    }
+    }
+
+
+    video_feed.addEventListener('click', function(event) {
+        var rect = event.target.getBoundingClientRect();
+        var x = parseInt(event.clientX - rect.left);
+        var y = parseInt(event.clientY - rect.top);
+        var url = '/coordinates';
+        fetch(url, {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+            },
+            body: JSON.stringify({x: x, y: y})
+        }).then(response => response.json())
+            .then(data => {
+                console.log('Success:', data);
+                console.log(x, y);
+            });
+    });
 </script>
 </body>
 </html>
+```

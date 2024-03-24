@@ -1,0 +1,251 @@
+body {
+	font-family: Arial, sans-serif;
+	background-color: #f0f0f0;
+	margin: 0;
+	padding: 0;
+	height: 100vh;
+}
+
+.container {
+	width: 90%;
+	height: 90%;
+	margin: 0 auto;
+}
+
+.navbar {
+	background-color: black;
+	color: white;
+	padding: 10px 0;
+	overflow: hidden;
+	height: 32px;
+	vertical-align: middle;
+}
+
+.navbar-brand {
+	font-size: 20px;
+	color: white;
+	height: 32px;
+	display: inline-block;
+	text-decoration: none;
+}
+
+.navbar-brand span {
+	height: 32px;
+	vertical-align: middle;
+}
+
+.navbar-brand img {
+	height: 32px;
+	vertical-align: middle;
+	border: white solid 1px;
+}
+
+.navbar-links {
+	height: 32px;
+	float: right;
+	overflow: hidden;
+}
+
+.navbar-links a {
+	color: white;
+	text-decoration: none;
+	font-size: 16px;
+	margin: 8px 20px;
+	display: inline-block;
+	height: 32px;
+	vertical-align: middle;
+}
+
+.navbar-links a:hover {
+	color: #45a049;
+}
+
+button {
+	padding: 10px 20px;
+	font-size: 16px;
+	border: 2px solid #4CAF50;
+	background-color: transparent;
+	color: #4CAF50;
+	cursor: pointer;
+	transition: background-color 0.3s, color 0.3s;
+}
+
+button:hover {
+	background-color: #4CAF50;
+	color: white;
+}
+
+.heading-box {
+	text-align: center;
+	margin: 20px;
+}
+
+/* Dropdown Styles */
+select {
+	padding: 10px 20px;
+	font-size: 16px;
+	border: 2px solid #4CAF50;
+	background-color: transparent;
+	color: #4CAF50;
+	cursor: pointer;
+	transition: background-color 0.3s, color 0.3s;
+}
+
+/* Style the dropdown arrow */
+select::-ms-expand {
+	display: none;
+}
+
+/* Style the appearance of the dropdown arrow */
+select::-webkit-select-arrow {
+	display: none;
+}
+
+/* Hover styles for the dropdown */
+select:hover {
+	background-color: #4CAF50;
+	color: white;
+}
+
+/* Focus styles for the dropdown */
+select:focus {
+	outline: none;
+	border-color: #45a049;
+}
+
+
+/* Responsive design */
+@media screen and (max-width: 768px) {
+    button {
+        margin-top: 20px;
+    }
+
+    select{
+        margin-top: 20px;
+    }
+
+    input[type="text"]{
+        margin-top: 20px;
+    }
+
+	.navbar-brand-text {
+		display: none;
+		 !important;
+	}
+
+	.navbar-links {
+		display: none;
+		float: none;
+		width: 100%;
+		text-align: center;
+	}
+
+	.navbar-links a {
+		display: block;
+		padding: 10px;
+	}
+
+	.icon {
+		display: block;
+		float: right;
+		margin-top: 5px;
+		color: white;
+	}
+
+	.content {
+		display: flex;
+		flex-direction: column;
+		align-items: center;
+	}
+
+	#video_feed {
+		width: 100vw;
+		height: auto;
+		max-width: 100%;
+	}
+
+	.content .system-log {
+		margin-top: 20px;
+		display:block;
+		width: 100%;
+	}
+}
+
+.content .system-log-text {
+	margin: 10px 0;
+	font-family: monospace;
+	text-align: left;
+}
+
+.content .system-log h2 {
+	background-color: #333;
+	text-align: center;
+	color: white;
+	padding: 10px;
+	margin: 0;
+}
+
+button, input[type="text"] {
+    padding: 10px 20px;
+    font-size: 16px;
+    border: 2px solid #4CAF50;
+    background-color: transparent;
+    color: #4CAF50;
+    cursor: pointer;
+    transition: background-color 0.3s, color 0.3s;
+}
+
+button:hover, input[type="text"]:hover {
+    background-color: #4CAF50;
+    color: white;
+}
+
+
+@media screen and (min-width: 769px) {
+	.icon {
+		display: none;
+	}
+
+	.heading-title {
+        display: none;
+    }
+
+	.content {
+		display: flex;
+		justify-content: space-between;
+		align-items: flex-start;
+		margin: 20px auto;
+	}
+
+	#video_feed {
+		width: 50vw;
+		height: auto;
+		max-width: 640px;
+        margin: 0 auto;
+    }
+
+	.content .system-log {
+		margin: 0 auto;
+		height: auto;
+		overflow-y: auto;
+		max-height: calc(100vh - 100px);
+	}
+
+
+	/* Customize scrollbar */
+	.content .system-log-text::-webkit-scrollbar {
+		width: 10px;
+	}
+
+	.content .system-log-text::-webkit-scrollbar-track {
+		background: #f1f1f1;
+	}
+
+	.content .system-log-text::-webkit-scrollbar-thumb {
+		background: #888;
+	}
+
+	.content .system-log-text::-webkit-scrollbar-thumb:hover {
+		background: #555;
+	}
+}

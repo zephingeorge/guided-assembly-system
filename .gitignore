@@ -1,2 +1,14 @@
 *.h5
 *.keras
+.installed.cfg
+bin
+develop-eggs
+dist
+downloads
+eggs
+parts
+src/*.egg-info
+lib
+lib64
+.DS_Store
+.idea/
