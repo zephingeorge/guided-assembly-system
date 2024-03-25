@@ -6,6 +6,7 @@ function toggleNavbar() {
         x.style.display = "block";
     }
 }
+
 window.addEventListener('DOMContentLoaded', function() {
     var image = document.getElementById('video_feed');
     var systemLog = document.querySelector('.system-log');

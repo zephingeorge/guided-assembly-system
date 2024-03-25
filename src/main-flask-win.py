@@ -1,16 +1,15 @@
+# import apriltag
 import time
+
 import numpy as np
-from flask import Flask, render_template, jsonify, request, Response
+from flask import Flask, render_template, jsonify, request
+
 from src.modules.camera import *
 from src.modules.database import save_database, read_database
 
-# from pupil_apriltags import Detector
-
 application_mode = "screwing"
 screw_coordinates = []
-template_id = None
-screwdriver_tagid = 3
-templates_list = read_database()
+screwdriver_tag_id = 3
 
 app = Flask(__name__, static_folder='static', template_folder='templates')
 
@@ -18,15 +17,15 @@ app = Flask(__name__, static_folder='static', template_folder='templates')
 @app.route('/template_list_details', methods=['GET'], endpoint='template_list_details')
 def template_list_details():
     details = []
-    global templates_list
-    for key in templates_list:
-        details.append({'id': key, 'name': templates_list[key]['name']})
+    templates_list = read_database()
+    for template_id in templates_list:
+        details.append({'id': template_id, 'name': templates_list[template_id]['name']})
     return jsonify(details)
 
 
 @app.route('/get_template', methods=['POST'], endpoint='get_template')
 def get_template():
-    global template_id, screw_coordinates, templates_list
+    global screw_coordinates
     data = request.get_json()
     template_id = data['id']
     templates_list = read_database()
@@ -36,6 +35,7 @@ def get_template():
 
 @app.route('/coordinates', methods=['POST'], endpoint='coordinates')
 def coordinates():
+    global screw_coordinates
     data = request.get_json()
     screw_coordinates.append(data)
     return jsonify(len(screw_coordinates))
@@ -43,16 +43,15 @@ def coordinates():
 
 @app.route('/save_template', methods=['POST'], endpoint='save_template')
 def save_template():
-    global screw_coordinates, template_id, templates_list
+    global screw_coordinates
     if len(screw_coordinates) == 0:
         return jsonify({'status': 'error', 'message': 'No screws sequence found'})
     data = request.get_json()
     data['screws'] = screw_coordinates
+    templates_list = read_database()
     templates_list[str(len(templates_list))] = data
     save_database(templates_list)
     screw_coordinates.clear()
-    global template_id
-    template_id = None
     return jsonify({'status': 'success', 'message': 'Template saved successfully'})
 
 
@@ -80,6 +79,7 @@ def index():
 
 
 def template_management(frame):
+    global screw_coordinates
     for screw in screw_coordinates:
         frame = cv2.circle(frame, (screw[0], screw[1]), 5, (0, 255, 0), 5)
     return frame
@@ -93,7 +93,6 @@ def generate_frames():
             frame = screwing_process(frame)
         elif application_mode == "template_management":
             frame = template_management(frame)
-
         else:
             break
         yield prepare_frame_for_stream(frame)
@@ -101,7 +100,7 @@ def generate_frames():
 
 
 def screwing_process(frame):
-    global screw_coordinates, screwdriver_tagid
+    global screw_coordinates, screwdriver_tag_id
     if not screw_coordinates:
         # Display message that no template has been selected
         cv2.putText(frame, "Template Error, No Screws Sequence Found", (10, 30), cv2.FONT_HERSHEY_SIMPLEX, 0.8,
@@ -110,17 +109,17 @@ def screwing_process(frame):
     screwdriver_center = np.array([0, 0])
     screw_index = 0
     start_time = 0
-    # at_detector = Detector()
+    # at_detector = apriltag.Detector()
     # Process image:
     # 1. Convert to grayscale
     gray_image = cv2.cvtColor(frame, cv2.COLOR_BGR2GRAY)
 
     # 2. Detect AprilTags
     # tags = at_detector.detect(gray_image)
-
-    # 3. Analyze screwdriver and screws
+    #
+    # # 3. Analyze screwdriver and screws
     # for tag in tags:
-    #     if tag.tag_id == screwdriver_tagid:
+    #     if tag.tag_id == screwdriver_tag_id:
     #         screwdriver_center = tag.center
     #         screwdriver_center = (int(screwdriver_center[0]), int(screwdriver_center[1]))
     #         break
@@ -151,7 +150,7 @@ def screwing_process(frame):
     if nearest_screw == screw_index:
         # check if the screwdriver is close enough to the screw
         if screwdriver_to_screw[nearest_screw] < 30:
-            # draw a orange circle on the screw to indicate screwing
+            # draw an orange circle on the screw to indicate screwing
             frame = cv2.circle(frame, (screw_coordinates[nearest_screw][0], screw_coordinates[nearest_screw][1]),
                                radius=8, color=(0, 165, 255), thickness=8)
             # check if start_time has been initialized
@@ -161,7 +160,7 @@ def screwing_process(frame):
                 elapsed_time = time.time() - start_time
                 # check if the screw has been screwed for 2 seconds
                 if elapsed_time > 2:
-                    # deinitialize start_time
+                    # delete start_time
                     del start_time
                     # increment screw_index
                     screw_index += 1
