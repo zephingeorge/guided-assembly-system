@@ -6,7 +6,7 @@ from flask import jsonify, request
 
 from modules.database import read_database
 from modules.neural_network import verify_screw_presence
-from pupil_apriltags import Detector
+import apriltag
 
 screw_coordinates = []
 screwdriver_tag_id = 3
@@ -39,15 +39,7 @@ def screwing_process(frame):
     screwdriver_center = np.array([0, 0])
     screw_index = 0
     start_time = 0
-    at_detector = Detector(
-        families='tag36h11',
-        nthreads=1,
-        quad_decimate=1.0,
-        quad_sigma=0.0,
-        refine_edges=1,
-        decode_sharpening=0.25,
-        debug=0
-    )
+    at_detector = apriltag.Detector()
     # Process image:
     # 1. Convert to grayscale
     gray_image = cv2.cvtColor(frame, cv2.COLOR_BGR2GRAY)
