@@ -2,11 +2,11 @@ import cv2
 from flask import Response
 
 
-
 def start_camera(height, width):
     camera_object = cv2.VideoCapture(0)
     camera_object.set(3, width)
     camera_object.set(4, height)
+    ret, frame = camera_object.read()
     return camera_object
 
 

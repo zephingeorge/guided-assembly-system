@@ -21,6 +21,8 @@ def get_template():
     return index_page.get_template()
 
 
+
+
 @app.route('/coordinates', methods=['POST'], endpoint='coordinates')
 def coordinates():
     return template_page.coordinates()
