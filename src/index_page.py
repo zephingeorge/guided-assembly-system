@@ -1,29 +1,25 @@
-# import apriltag
 import time
 
+import cv2
 import numpy as np
-from flask import Flask, render_template, jsonify, request
+from flask import jsonify, request
 
-from src.modules.camera import *
-from src.modules.database import save_database, read_database
+from modules.database import read_database
 
-application_mode = "screwing"
 screw_coordinates = []
 screwdriver_tag_id = 3
 
-app = Flask(__name__, static_folder='static', template_folder='templates')
 
-
-@app.route('/template_list_details', methods=['GET'], endpoint='template_list_details')
 def template_list_details():
+    print("template_list_details")
     details = []
     templates_list = read_database()
     for template_id in templates_list:
         details.append({'id': template_id, 'name': templates_list[template_id]['name']})
+    print(details)
     return jsonify(details)
 
 
-@app.route('/get_template', methods=['POST'], endpoint='get_template')
 def get_template():
     global screw_coordinates
     data = request.get_json()
@@ -31,72 +27,6 @@ def get_template():
     templates_list = read_database()
     screw_coordinates = templates_list[str(template_id)]['screws']
     return jsonify(templates_list[template_id])
-
-
-@app.route('/coordinates', methods=['POST'], endpoint='coordinates')
-def coordinates():
-    global screw_coordinates
-    data = request.get_json()
-    screw_coordinates.append(data)
-    return jsonify(len(screw_coordinates))
-
-
-@app.route('/save_template', methods=['POST'], endpoint='save_template')
-def save_template():
-    global screw_coordinates
-    if len(screw_coordinates) == 0:
-        return jsonify({'status': 'error', 'message': 'No screws sequence found'})
-    data = request.get_json()
-    data['screws'] = screw_coordinates
-    templates_list = read_database()
-    templates_list[str(len(templates_list))] = data
-    save_database(templates_list)
-    screw_coordinates.clear()
-    return jsonify({'status': 'success', 'message': 'Template saved successfully'})
-
-
-@app.route('/video_feed')
-def video_feed():
-    return Response(generate_frames(), mimetype='multipart/x-mixed-replace; boundary=frame')
-
-
-# template page
-@app.route('/templates', methods=['GET'], endpoint='templates')
-def templates():
-    global application_mode, screw_coordinates
-    screw_coordinates = []
-    application_mode = "template_management"
-    return render_template('templates.html')
-
-
-# switch to home page
-@app.route('/')
-def index():
-    global application_mode, screw_coordinates
-    screw_coordinates = []
-    application_mode = "screwing"
-    return render_template('index.html')
-
-
-def template_management(frame):
-    global screw_coordinates
-    for screw in screw_coordinates:
-        frame = cv2.circle(frame, (screw[0], screw[1]), 5, (0, 255, 0), 5)
-    return frame
-
-
-def generate_frames():
-    camera_object = start_camera(640, 480)
-    while True:
-        frame = get_camera_frame(camera_object)
-        if application_mode == "screwing":
-            frame = screwing_process(frame)
-        elif application_mode == "template_management":
-            frame = template_management(frame)
-        else:
-            break
-        yield prepare_frame_for_stream(frame)
-    stop_camera(camera_object)
 
 
 def screwing_process(frame):
@@ -171,11 +101,9 @@ def screwing_process(frame):
                     cv2.putText(frame, "All screws have been screwed", (10, 90), cv2.FONT_HERSHEY_SIMPLEX, 0.8,
                                 (0, 255, 0), 2, cv2.LINE_AA)
                     return
+
     # display green circle on screws that have been screwed
     for i in range(screw_index):
         frame = cv2.circle(frame, (screw_coordinates[i][0], screw_coordinates[i][1]), 8,
                            (0, 255, 0), 8)
     return frame
-
-
-app.run(host='0.0.0.0', debug=True)
