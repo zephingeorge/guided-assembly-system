@@ -56,11 +56,14 @@ def generate_frames():
     camera_object = start_camera(640, 480)
     while True:
         frame = get_camera_frame(camera_object)
+        if frame is None:
+            break
         if application_mode == "screwing":
             frame = index_page.screwing_process(frame)
         elif application_mode == "templates":
             frame = template_page.template_management(frame)
         else:
+            print("Invalid Application Mode")
             break
         yield prepare_frame_for_stream(frame)
     stop_camera(camera_object)
