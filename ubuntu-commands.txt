@@ -1,0 +1,23 @@
+add-apt-repository ppa:deadsnakes/ppa
+apt update
+apt upgrade
+apt install python3.12
+apt install cmake
+apt install build-essential
+alias python='python3.12'
+wget https://bootstrap.pypa.io/get-pip.py
+python get-pip.py 
+pip install --ignore-installed blinker
+pip install flask
+pip install opencv-python keras==3.0.5 tensorflow==2.16.0rc --default-timeout=1000
+apt install git
+git clone https://github.com/AprilRobotics/apriltag.git
+cd apriltag/
+cmake -B build -DCMAKE_BUILD_TYPE=Release
+cmake --build build --target install
+cd ..
+pip install apriltag
+git clone https://github.com/zephingeorge/guided-assembly-system
+cd guided-assembly-system/
+cd src
+python app.py 
