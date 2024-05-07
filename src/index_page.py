@@ -65,12 +65,16 @@ def screwing_process(frame):
         # 4. Display information and circles, in green 
         cv2.putText(frame, "Next Screw : " + str(screw_index + 1), (10, 30), cv2.FONT_HERSHEY_SIMPLEX, 0.8, (0, 255, 0), 2,
                     cv2.LINE_AA)
+        # Display the type of the next screw
+        cv2.putText(frame, "Next Screw Type : " + screw_coordinates[screw_index][2], (10, 60), cv2.FONT_HERSHEY_SIMPLEX,
+                    0.8, (0, 255, 0), 2,
+                    cv2.LINE_AA)
         # #screw that needs to be screwed
         cv2.circle(frame, (screw_coordinates[screw_index][0], screw_coordinates[screw_index][1]), 8, (0, 255, 0), 8)
         # Display the screwdriver center
         cv2.circle(frame, screwdriver_center, 5, (0, 0, 255), 2)
         # Display the nearest screw number
-        cv2.putText(frame, "Nearest Screw : " + str(nearest_screw + 1), (10, 60), cv2.FONT_HERSHEY_SIMPLEX, 0.8,
+        cv2.putText(frame, "Nearest Screw : " + str(nearest_screw + 1), (10, 90), cv2.FONT_HERSHEY_SIMPLEX, 0.8,
                     (0, 255, 0), 2, cv2.LINE_AA)
     # check if the nearest screw is the next screw to be screwed
         if nearest_screw == screw_index:
@@ -92,7 +96,7 @@ def screwing_process(frame):
                         start_time = 0
                         # increment screw_index
                         screw_index += 1
-                        # check if all screws have been screwed                        
+                        # check if all screws have been screwed
             else:
                 # reset start_time
                 start_time = 0
@@ -120,19 +124,20 @@ def screwing_process(frame):
                     # check if screw is present using neural network
                     status = verify_screw_presence(frame, screw[0], screw[1])
                     results.append(status)
-        else: 
-            cv2. putText(frame, "Screw Verification Results:", (10, 30), cv2.FONT_HERSHEY_SIMPLEX, 0.8, (0, 255, 0), 2,
+        else:
+            cv2.putText(frame, "Screw Verification Results:", (10, 30), cv2.FONT_HERSHEY_SIMPLEX, 0.8, (0, 255, 0), 2,
                         cv2.LINE_AA)
             for index, screw in enumerate(screw_coordinates):
                 print("Screw Verification Results:", results)
                 print(index)
-                status = results[index]  
-                if status:
+                status = results[index]
+                if status == screw[2]:  # Compare the predicted screw type with the expected screw type
                     cv2.putText(frame, str(index + 1) + " Screw " + str(screw) + " is present", (10, index * 30 + 90),
                                 cv2.FONT_HERSHEY_SIMPLEX, 0.8, (0, 255, 0), 2, cv2.LINE_AA)
                     cv2.circle(frame, (screw[0], screw[1]), 8, (0, 255, 0), 8)
                 else:
-                    cv2.putText(frame, str(index + 1) + " Screw " + str(screw) + " is missing", (10, index * 30 + 90),
+                    cv2.putText(frame, str(index + 1) + " Screw " + str(screw) + " is missing or incorrect",
+                                (10, index * 30 + 90),
                                 cv2.FONT_HERSHEY_SIMPLEX, 0.8, (0, 0, 255), 2, cv2.LINE_AA)
                     cv2.circle(frame, (screw[0], screw[1]), 8, (0, 0, 255), 8)
     return frame

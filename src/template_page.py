@@ -10,6 +10,8 @@ screw_coordinates = []
 def coordinates():
     global screw_coordinates
     data = request.get_json()
+    if len(data) != 3:
+        return jsonify({'status': 'error', 'message': 'Invalid data format'})
     screw_coordinates.append(data)
     return jsonify(len(screw_coordinates))
 
@@ -31,4 +33,5 @@ def template_management(frame):
     global screw_coordinates
     for screw in screw_coordinates:
         frame = cv2.circle(frame, (screw[0], screw[1]), 5, (0, 255, 0), 5)
+        cv2.putText(frame, screw[2], (screw[0], screw[1]), cv2.FONT_HERSHEY_SIMPLEX, 1, (0, 255, 0), 2)
     return frame

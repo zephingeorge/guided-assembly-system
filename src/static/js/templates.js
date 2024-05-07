@@ -66,20 +66,22 @@ var system_log = document.querySelector('.system-log-text p');
         y = y / rect.height * 480;
         y = parseInt(y);
         console.log('x: ' + x + ', y: ' + y);
+        var selectedScrew = document.getElementById('screws').value;
         var url = '/coordinates';
         fetch(url, {
             method: 'POST',
             headers: {
                 'Content-Type': 'application/json',
             },
-            body: JSON.stringify([x, y])
+            body: JSON.stringify([x, y, selectedScrew])
         }).then(response => response.json())
             .then(data => {
                 console.log('Success:', data);
                 system_log.innerHTML += 'Screw No : ' + data + ' at (' + x + ', ' + y + ')<br>';
-            });
+        });
     });
 
-     window.onload = function() {
+
+    window.onload = function() {
     video_feed.addEventListener('click', clickStartStopButton);
     }
