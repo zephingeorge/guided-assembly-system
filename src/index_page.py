@@ -40,7 +40,7 @@ def screwing_process(frame):
         cv2.putText(frame, "Template Error, No Screws Sequence Found", (10, 30), cv2.FONT_HERSHEY_SIMPLEX, 0.8,
                     (0, 255, 0), 2, cv2.LINE_AA)
         return frame
-    raw_frame = frame
+    raw_frame = frame.copy()
     screwdriver_center = np.array([0, 0])
     at_detector = apriltag.Detector()
     # Process image:
@@ -132,10 +132,10 @@ def screwing_process(frame):
                                 cv2.LINE_AA)
                     if elapsed_time > 3:
                         wait_time = 0
-                    for index, screw in enumerate(screw_coordinates):
-                        # check if screw is present using neural network
-                        status = verify_screw_presence(raw_frame, screw[0], screw[1])
-                        results.append(status)
+                        for index, screw in enumerate(screw_coordinates):
+                            # check if screw is present using neural network
+                            status = verify_screw_presence(raw_frame, screw[0], screw[1])
+                            results.append(status)
         else:
             print("Screw Verification Results:", results)
             cv2.putText(frame, "Screw Verification Results:", (10, 30), cv2.FONT_HERSHEY_SIMPLEX, 0.8, (0, 255, 0), 2,
