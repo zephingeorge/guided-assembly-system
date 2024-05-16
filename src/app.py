@@ -56,7 +56,7 @@ def index():
 
 
 def generate_frames():
-    camera_object = start_camera(640, 480)
+    camera_object = start_camera(0, 0) #640,480
     while True:
         frame = get_camera_frame(camera_object)
         if frame is None:

@@ -125,12 +125,12 @@ def screwing_process(frame):
                     status = verify_screw_presence(frame, screw[0], screw[1])
                     results.append(status)
         else:
+            print("Screw Verification Results:", results)
             cv2.putText(frame, "Screw Verification Results:", (10, 30), cv2.FONT_HERSHEY_SIMPLEX, 0.8, (0, 255, 0), 2,
                         cv2.LINE_AA)
             for index, screw in enumerate(screw_coordinates):
-                print("Screw Verification Results:", results)
-                print(index)
                 status = results[index]
+                print(index, screw, status)
                 if status == screw[2]:  # Compare the predicted screw type with the expected screw type
                     cv2.putText(frame, str(index + 1) + " Screw " + str(screw) + " is present", (10, index * 30 + 90),
                                 cv2.FONT_HERSHEY_SIMPLEX, 0.8, (0, 255, 0), 2, cv2.LINE_AA)

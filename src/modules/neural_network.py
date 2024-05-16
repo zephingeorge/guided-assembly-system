@@ -8,8 +8,8 @@ model = keras.models.load_model('../neural-network/model.keras')
 
 def verify_screw_presence(input_frame, x, y):
     frame_shape = input_frame.shape
-    crop_size = 16
-    frame_height, frame_width = frame_shape[:2]
+    crop_size = 20
+    frame_height, frame_width, _ = input_frame.shape
     half_crop_size = crop_size // 2
     click_point_x = max(0, min(x, frame_width - 1))
     click_point_y = max(0, min(y, frame_height - 1))
@@ -18,12 +18,11 @@ def verify_screw_presence(input_frame, x, y):
     bottom_right_x = min(frame_width, click_point_x + half_crop_size)
     bottom_right_y = min(frame_height, click_point_y + half_crop_size)
     cropped_frame = input_frame[top_left_y:bottom_right_y, top_left_x:bottom_right_x]
-    cropped_frame = cv2.resize(cropped_frame, (64, 64), interpolation=cv2.INTER_AREA)
-    resized_image = tf.image.resize(cropped_frame, (128, 128))
-    prediction = model.predict(resized_image)
-    print('prediction: ', prediction)
+    cropped_frame_rgb = cv2.cvtColor(cropped_frame, cv2.COLOR_BGR2RGB)
+    resized_frame = cv2.resize(cropped_frame_rgb, (64, 64), interpolation=cv2.INTER_AREA)
+    screw_patch = tf.image.resize(resized_frame, (128, 128))
+    prediction = model.predict(np.expand_dims(screw_patch, axis=0))
     predicted_class = np.argmax(prediction, axis=1)
-    print('predicted class: ', predicted_class)
     if predicted_class[0] == 0:
         return "m4"
     elif predicted_class[0] == 1:
