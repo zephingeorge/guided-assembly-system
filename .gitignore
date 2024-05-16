@@ -1,5 +1,4 @@
 *.h5
-*.keras
 .installed.cfg
 bin
 develop-eggs
