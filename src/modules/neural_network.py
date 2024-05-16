@@ -2,12 +2,12 @@ import cv2
 import keras
 import numpy as np
 import tensorflow as tf
+import time
 
 model = keras.models.load_model('../neural-network/model.keras')
 
 
 def verify_screw_presence(input_frame, x, y):
-    frame_shape = input_frame.shape
     crop_size = 20
     frame_height, frame_width, _ = input_frame.shape
     half_crop_size = crop_size // 2
@@ -21,6 +21,10 @@ def verify_screw_presence(input_frame, x, y):
     cropped_frame_rgb = cv2.cvtColor(cropped_frame, cv2.COLOR_BGR2RGB)
     resized_frame = cv2.resize(cropped_frame_rgb, (64, 64), interpolation=cv2.INTER_AREA)
     screw_patch = tf.image.resize(resized_frame, (128, 128))
+    filename = f"cropped_image_date_{time.time()}.jpg"
+    filepath = "./neural-network/screw-extracts/" + filename
+    print(f"Image : {filepath}")
+    cv2.imwrite(filepath, resized_frame)
     prediction = model.predict(np.expand_dims(screw_patch, axis=0))
     predicted_class = np.argmax(prediction, axis=1)
     if predicted_class[0] == 0:
