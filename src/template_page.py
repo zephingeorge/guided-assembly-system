@@ -29,6 +29,12 @@ def save_template():
     return jsonify({'status': 'success', 'message': 'Template saved successfully'})
 
 
+def clear_screws():
+    global screw_coordinates
+    screw_coordinates.clear()
+    return jsonify({'status': 'success', 'message': 'Screws cleared successfully'})
+
+
 def template_management(frame):
     global screw_coordinates
     for screw in screw_coordinates:

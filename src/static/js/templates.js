@@ -2,8 +2,24 @@ var video_feed = document.getElementById('video_feed');
 var button = document.getElementById('startStopButton');
 var template_name = document.getElementById('template_name');
 var system_log = document.querySelector('.system-log-text p');
+var clear_button = document.getElementById('clearButton');
+
     function clickStartStopButton() {
         button.click();
+    }
+
+    clear_button.onclick = function() {
+    var url = '/clear_screws';
+    fetch(url, {
+        method: 'POST',
+        headers: {
+            'Content-Type': 'application/json',
+        }
+    }).then(response => response.json())
+        .then(data => {
+            console.log('Success:', data);
+            system_log.innerHTML += 'Screws cleared<br>';
+    });
     }
 
     function saveTemplate() {
@@ -29,6 +45,8 @@ var system_log = document.querySelector('.system-log-text p');
                 });
 
     }
+
+
 
     button.onclick = function() {
         if (template_name.value === '') {

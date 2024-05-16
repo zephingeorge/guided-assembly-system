@@ -30,6 +30,9 @@ def coordinates():
 def save_template():
     return template_page.save_template()
 
+@app.route('/clear_screws', methods=['GET'], endpoint='clear_screws')
+def clear_screws():
+    return template_page.clear_screws()
 
 @app.route('/video_feed')
 def video_feed():
