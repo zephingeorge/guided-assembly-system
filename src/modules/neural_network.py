@@ -20,6 +20,17 @@ def verify_screw_presence(input_frame, x, y):
     cropped_frame = input_frame[top_left_y:bottom_right_y, top_left_x:bottom_right_x]
     cropped_frame = cv2.resize(cropped_frame, (64, 64), interpolation=cv2.INTER_AREA)
     resized_image = tf.image.resize(cropped_frame, (128, 128))
-    output = model.predict(np.expand_dims(resized_image, axis=0))
-    output = output > 0.5
-    return output
+    prediction = model.predict(resized_image)
+    print('prediction: ', prediction)
+    predicted_class = np.argmax(prediction, axis=1)
+    print('predicted class: ', predicted_class)
+    if predicted_class[0] == 0:
+        return "m4"
+    elif predicted_class[0] == 1:
+        return "m8"
+    elif predicted_class[0] == 2:
+        return "m12"
+    elif predicted_class[0] == 3:
+        return "none"
+    else:
+        return "unknown"
