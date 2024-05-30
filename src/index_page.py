@@ -25,13 +25,16 @@ def template_list_details():
 
 
 def get_template():
-    global screw_coordinates
+    global screw_coordinates, start_time, screw_index, results, wait_time
     data = request.get_json()
     template_id = data['id']
     templates_list = read_database()
     screw_coordinates = templates_list[str(template_id)]['screws']
+    start_time = 0
+    screw_index = 0
+    wait_time = 0
+    results = []
     return jsonify(templates_list[template_id])
-
 
 def screwing_process(frame):
     global screw_coordinates, screwdriver_tag_id, start_time, screw_index, wait_time
